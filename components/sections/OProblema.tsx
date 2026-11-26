@@ -9,19 +9,22 @@ import { gsap, prefereMovimentoReduzido, registrarGsap } from "@/lib/motion";
 // em conflito com a regra "sem promessas de saúde" do CLAUDE.md (seção "Regras de
 // conteúdo") — risco assumido pelo cliente. Pedir revisão do Rios antes do lançamento:
 // uma alegação de contaminação por microplástico também pode exigir comprovação técnica.
-const CARTOES = [
+const ITENS = [
   {
     titulo: "Isso aqui não é tempero.",
+    texto: "São partículas de plástico, não grãos de pimenta. Elas se soltam sozinhas, sem avisar.",
     arquivo: "problema-microplastico-agua.png",
     alt: "Tigela de arroz com partículas coloridas de microplástico misturadas nos grãos",
   },
   {
     titulo: "Quanto mais risca, mais solta.",
+    texto: "Toda vez que a faca ou a esponja passa, uma lasquinha a mais sai da tábua de plástico.",
     arquivo: "problema-tabua-riscada.png",
     alt: "Tábua de plástico riscada soltando farelo e lascas na bancada",
   },
   {
     titulo: "De um lado dá pra confiar.",
+    texto: "Pote de plástico manchado e riscado, do outro, vidro que lava e volta como novo.",
     arquivo: "problema-comparacao-plastico-vidro.png",
     alt: "Comparação lado a lado: pote de plástico manchado e riscado ao lado de um pote de vidro limpo",
   },
@@ -29,22 +32,22 @@ const CARTOES = [
 
 export function OProblema() {
   const listaRef = useRef<HTMLDivElement>(null);
-  const cartaoRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const linhaRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useLayoutEffect(() => {
     if (prefereMovimentoReduzido()) return;
     registrarGsap();
 
     const ctx = gsap.context(() => {
-      cartaoRefs.current.forEach((cartao) => {
-        if (!cartao) return;
-        gsap.from(cartao, {
+      linhaRefs.current.forEach((linha) => {
+        if (!linha) return;
+        gsap.from(linha, {
           y: 40,
           opacity: 0,
           duration: 0.6,
           ease: "power2.out",
           scrollTrigger: {
-            trigger: cartao,
+            trigger: linha,
             start: "top 85%",
             toggleActions: "play none none reverse",
           },
@@ -67,26 +70,30 @@ export function OProblema() {
         </p>
       </div>
 
-      <div ref={listaRef} className="mx-auto mt-14 grid max-w-5xl gap-6 px-5 sm:grid-cols-3">
-        {CARTOES.map((cartao, indice) => (
+      <div ref={listaRef} className="mx-auto mt-14 flex max-w-4xl flex-col gap-14 px-5 sm:gap-20">
+        {ITENS.map((item, indice) => (
           <div
-            key={cartao.titulo}
+            key={item.titulo}
             ref={(el) => {
-              cartaoRefs.current[indice] = el;
+              linhaRefs.current[indice] = el;
             }}
-            className="relative aspect-[4/5] w-full overflow-hidden rounded-[1.75rem] border-2 border-terracota-escuro/25 shadow-[0_24px_40px_-16px_rgba(59,36,24,0.35)]"
+            className="grid gap-6 sm:grid-cols-2 sm:items-center sm:gap-10"
           >
-            <Image
-              src={asset(`/img/${cartao.arquivo}`)}
-              alt={cartao.alt}
-              fill
-              sizes="(min-width: 640px) 33vw, 90vw"
-              className="object-cover"
-            />
-            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-cafe/90 via-cafe/40 to-transparent px-6 pt-16 pb-6">
-              <p className="font-titulo text-2xl leading-tight font-black text-creme sm:text-3xl">
-                {cartao.titulo}
+            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-terracota-escuro/25">
+              <Image
+                src={asset(`/img/${item.arquivo}`)}
+                alt={item.alt}
+                fill
+                sizes="(min-width: 640px) 440px, 90vw"
+                className="object-cover"
+              />
+            </div>
+
+            <div className="text-left">
+              <p className="font-titulo text-2xl leading-tight font-black text-terracota sm:text-3xl">
+                {item.titulo}
               </p>
+              <p className="mt-3 font-texto text-base text-cafe/90">{item.texto}</p>
             </div>
           </div>
         ))}
