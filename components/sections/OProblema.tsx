@@ -28,34 +28,29 @@ const CARTOES = [
 ];
 
 export function OProblema() {
-  const palcoRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
+  const listaRef = useRef<HTMLDivElement>(null);
+  const cartaoRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useLayoutEffect(() => {
     if (prefereMovimentoReduzido()) return;
     registrarGsap();
 
     const ctx = gsap.context(() => {
-      const track = trackRef.current;
-      const palco = palcoRef.current;
-      if (!track || !palco) return;
-
-      const distancia = track.scrollWidth - palco.clientWidth;
-      if (distancia <= 0) return;
-
-      gsap.to(track, {
-        x: -distancia,
-        ease: "none",
-        scrollTrigger: {
-          trigger: palco,
-          start: "top top",
-          end: () => `+=${distancia}`,
-          scrub: 1.2,
-          pin: true,
-          invalidateOnRefresh: true,
-        },
+      cartaoRefs.current.forEach((cartao) => {
+        if (!cartao) return;
+        gsap.from(cartao, {
+          y: 40,
+          opacity: 0,
+          duration: 0.6,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: cartao,
+            start: "top 85%",
+            toggleActions: "play none none reverse",
+          },
+        });
       });
-    }, palcoRef);
+    }, listaRef);
 
     return () => ctx.revert();
   }, []);
@@ -72,30 +67,29 @@ export function OProblema() {
         </p>
       </div>
 
-      <div ref={palcoRef} className="relative mt-16 h-[75vh] overflow-hidden">
-        <div ref={trackRef} className="flex h-full items-center gap-6 pl-[8vw]">
-          {CARTOES.map((cartao) => (
-            <div
-              key={cartao.titulo}
-              className="relative aspect-[4/5] w-[78vw] max-w-xs shrink-0 overflow-hidden rounded-[1.75rem] border-2 border-terracota-escuro/25 shadow-[0_24px_40px_-16px_rgba(59,36,24,0.35)] sm:w-[360px] sm:max-w-none"
-            >
-              <Image
-                src={asset(`/img/${cartao.arquivo}`)}
-                alt={cartao.alt}
-                fill
-                sizes="(min-width: 640px) 360px, 78vw"
-                className="object-cover"
-              />
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-cafe/90 via-cafe/40 to-transparent px-6 pt-16 pb-6">
-                <p className="font-titulo text-2xl leading-tight font-black text-creme sm:text-3xl">
-                  {cartao.titulo}
-                </p>
-              </div>
+      <div ref={listaRef} className="mx-auto mt-14 grid max-w-5xl gap-6 px-5 sm:grid-cols-3">
+        {CARTOES.map((cartao, indice) => (
+          <div
+            key={cartao.titulo}
+            ref={(el) => {
+              cartaoRefs.current[indice] = el;
+            }}
+            className="relative aspect-[4/5] w-full overflow-hidden rounded-[1.75rem] border-2 border-terracota-escuro/25 shadow-[0_24px_40px_-16px_rgba(59,36,24,0.35)]"
+          >
+            <Image
+              src={asset(`/img/${cartao.arquivo}`)}
+              alt={cartao.alt}
+              fill
+              sizes="(min-width: 640px) 33vw, 90vw"
+              className="object-cover"
+            />
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-cafe/90 via-cafe/40 to-transparent px-6 pt-16 pb-6">
+              <p className="font-titulo text-2xl leading-tight font-black text-creme sm:text-3xl">
+                {cartao.titulo}
+              </p>
             </div>
-          ))}
-          {/* respiro no fim pra o último card não colar na borda */}
-          <div className="w-[8vw] shrink-0" aria-hidden />
-        </div>
+          </div>
+        ))}
       </div>
     </section>
   );
