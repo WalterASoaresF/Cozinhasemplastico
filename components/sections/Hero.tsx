@@ -1,7 +1,5 @@
-import { contarFramesHero } from "@/lib/frames";
-import { HeroFrames } from "@/components/sections/HeroFrames";
+import { HeroVideo } from "@/components/sections/HeroVideo";
 
 export function Hero() {
-  const totalFrames = contarFramesHero();
-  return <HeroFrames totalFrames={totalFrames} />;
+  return <HeroVideo />;
 }

@@ -50,7 +50,7 @@ export function OProblema() {
           trigger: palco,
           start: "top top",
           end: () => `+=${distancia}`,
-          scrub: 0.6,
+          scrub: 1.2,
           pin: true,
           invalidateOnRefresh: true,
         },
@@ -73,28 +73,28 @@ export function OProblema() {
       </div>
 
       <div ref={palcoRef} className="relative mt-16 h-[75vh] overflow-hidden">
-        <div ref={trackRef} className="flex h-full items-center">
+        <div ref={trackRef} className="flex h-full items-center gap-6 pl-[8vw]">
           {CARTOES.map((cartao) => (
             <div
               key={cartao.titulo}
-              className="flex w-screen shrink-0 items-center justify-center px-5"
+              className="relative aspect-[4/5] w-[78vw] max-w-xs shrink-0 overflow-hidden rounded-[1.75rem] border-2 border-terracota-escuro/25 shadow-[0_24px_40px_-16px_rgba(59,36,24,0.35)] sm:w-[360px] sm:max-w-none"
             >
-              <div className="relative aspect-[4/5] w-full max-w-xs overflow-hidden rounded-[1.75rem] border-2 border-terracota-escuro/25 shadow-[0_24px_40px_-16px_rgba(59,36,24,0.35)] sm:max-w-sm">
-                <Image
-                  src={asset(`/img/${cartao.arquivo}`)}
-                  alt={cartao.alt}
-                  fill
-                  sizes="(min-width: 640px) 384px, 320px"
-                  className="object-cover"
-                />
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-cafe/90 via-cafe/40 to-transparent px-6 pt-16 pb-6">
-                  <p className="font-titulo text-2xl leading-tight font-black text-creme sm:text-3xl">
-                    {cartao.titulo}
-                  </p>
-                </div>
+              <Image
+                src={asset(`/img/${cartao.arquivo}`)}
+                alt={cartao.alt}
+                fill
+                sizes="(min-width: 640px) 360px, 78vw"
+                className="object-cover"
+              />
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-cafe/90 via-cafe/40 to-transparent px-6 pt-16 pb-6">
+                <p className="font-titulo text-2xl leading-tight font-black text-creme sm:text-3xl">
+                  {cartao.titulo}
+                </p>
               </div>
             </div>
           ))}
+          {/* respiro no fim pra o último card não colar na borda */}
+          <div className="w-[8vw] shrink-0" aria-hidden />
         </div>
       </div>
     </section>
