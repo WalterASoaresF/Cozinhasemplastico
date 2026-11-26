@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+:root {
+  --color-terracota: #ac4922;
+  --color-terracota-escuro: #8a3a1c;
+  --color-creme: #fbf0dc;
+  --color-creme-escuro: #f1e2c6;
+  --color-cafe: #3b2418;
+  --color-oliva: #4a5240;
+}
+
+@theme inline {
+  --color-terracota: var(--color-terracota);
+  --color-terracota-escuro: var(--color-terracota-escuro);
+  --color-creme: var(--color-creme);
+  --color-creme-escuro: var(--color-creme-escuro);
+  --color-cafe: var(--color-cafe);
+  --color-oliva: var(--color-oliva);
+  --font-titulo: var(--font-fraunces);
+  --font-texto: var(--font-instrument-sans);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-creme);
+  color: var(--color-cafe);
+  font-family: var(--font-texto), ui-sans-serif, system-ui, sans-serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
