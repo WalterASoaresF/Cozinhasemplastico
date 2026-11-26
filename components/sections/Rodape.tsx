@@ -1,12 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
+import { asset } from "@/lib/basePath";
 
 export function Rodape() {
   return (
     <footer className="bg-terracota-escuro py-14 text-creme">
       <div className="mx-auto flex max-w-5xl flex-col items-center gap-6 px-5 text-center">
         <Image
-          src="/img/logo-terracota.png"
+          src={asset("/img/logo-terracota.png")}
           alt="Cozinha Sem Plástico"
           width={180}
           height={64}

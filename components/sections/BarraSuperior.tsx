@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Botao } from "@/components/ui/Botao";
+import { asset } from "@/lib/basePath";
 
 export function BarraSuperior() {
   const [rolou, setRolou] = useState(false);
@@ -23,7 +24,7 @@ export function BarraSuperior() {
       <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-3">
         <a href="#topo" className="flex items-center" aria-label="Cozinha Sem Plástico">
           <Image
-            src="/img/logo-creme.png"
+            src={asset("/img/logo-creme.png")}
             alt="Cozinha Sem Plástico"
             width={160}
             height={56}

@@ -2,6 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { Botao } from "@/components/ui/Botao";
+import { asset } from "@/lib/basePath";
 import { gsap, prefereMovimentoReduzido, registrarGsap, ScrollTrigger } from "@/lib/motion";
 
 type HeroFramesProps = {
@@ -11,7 +12,7 @@ type HeroFramesProps = {
 const TITULO = "Uma cozinha que dura.";
 
 function caminhoFrame(indice: number) {
-  return `/frames/frame_${String(indice + 1).padStart(3, "0")}.webp`;
+  return asset(`/frames/frame_${String(indice + 1).padStart(3, "0")}.webp`);
 }
 
 export function HeroFrames({ totalFrames }: HeroFramesProps) {

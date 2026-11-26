@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useLayoutEffect, useRef } from "react";
 import { Botao } from "@/components/ui/Botao";
 import { EtiquetaMaterial } from "@/components/ui/EtiquetaMaterial";
+import { asset } from "@/lib/basePath";
 import { marcarKitInteresse } from "@/lib/kitSelecionado";
 import { gsap, prefereMovimentoReduzido, registrarGsap } from "@/lib/motion";
 
@@ -130,7 +131,7 @@ export function Kits() {
             >
               <div className="relative aspect-[4/5] overflow-hidden">
                 <Image
-                  src={`/img/${kit.imagem}`}
+                  src={asset(`/img/${kit.imagem}`)}
                   alt={kit.nome}
                   fill
                   sizes="(min-width: 1024px) 360px, 90vw"

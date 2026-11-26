@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useLayoutEffect, useRef } from "react";
+import { asset } from "@/lib/basePath";
 import { gsap, prefereMovimentoReduzido, registrarGsap } from "@/lib/motion";
 
 // TEXTO/IMAGEM PROVISÓRIO: ângulo de microplásticos pedido pelo cliente em 2026-11-25,
@@ -80,7 +81,7 @@ export function OProblema() {
             >
               <div className="relative aspect-[4/5] w-full max-w-xs overflow-hidden rounded-[1.75rem] border-2 border-terracota-escuro/25 shadow-[0_24px_40px_-16px_rgba(59,36,24,0.35)] sm:max-w-sm">
                 <Image
-                  src={`/img/${cartao.arquivo}`}
+                  src={asset(`/img/${cartao.arquivo}`)}
                   alt={cartao.alt}
                   fill
                   sizes="(min-width: 640px) 384px, 320px"

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useEffect, useState, type FormEvent } from "react";
 import { Botao } from "@/components/ui/Botao";
 import { Campo } from "@/components/ui/Campo";
+import { asset } from "@/lib/basePath";
 import { lerKitInteresse } from "@/lib/kitSelecionado";
 import { esquemaLead } from "@/lib/validacaoLead";
 
@@ -221,22 +222,13 @@ function TelaSucesso() {
   return (
     <section id="formulario" className="bg-creme-escuro py-20 sm:py-28">
       <div className="mx-auto flex max-w-md flex-col items-center gap-6 px-5 text-center">
-        <div className="relative h-32 w-32">
-          <Image
-            src="/img/hero-pote-1.png"
-            alt=""
-            fill
-            aria-hidden
-            className="object-contain opacity-90"
-          />
-          <motion.div
-            className="absolute inset-0"
-            animate={{ rotate: [0, -18, 14, -10, 0] }}
-            transition={{ duration: 1.8, repeat: Infinity, repeatDelay: 1, ease: "easeInOut" }}
-          >
-            <Image src="/img/hero-colher.png" alt="" fill aria-hidden className="object-contain" />
-          </motion.div>
-        </div>
+        <motion.div
+          className="relative h-24 w-24"
+          animate={{ rotate: [0, -18, 14, -10, 0] }}
+          transition={{ duration: 1.8, repeat: Infinity, repeatDelay: 1, ease: "easeInOut" }}
+        >
+          <Image src={asset("/img/simbolo-colher.png")} alt="" fill aria-hidden className="object-contain" />
+        </motion.div>
 
         <h2 className="font-titulo text-3xl leading-[0.98] font-black text-terracota sm:text-4xl">
           Pronto, você está na lista.
