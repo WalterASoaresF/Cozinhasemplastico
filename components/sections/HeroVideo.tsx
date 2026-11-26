@@ -93,8 +93,21 @@ export function HeroVideo() {
         preload="auto"
         aria-hidden
       >
-        <source src={asset("/video/hero.webm")} type="video/webm" />
+        {/*
+          MP4/H.264 primeiro de propósito: tem decodificação por hardware em
+          quase todo celular. O WebM/VP9 costuma só ter decodificação por
+          hardware em desktop — em celular (principalmente Android
+          intermediário) ele decodifica por software, e isso que travava a
+          rolagem ao arrastar o vídeo. O navegador usa o primeiro <source>
+          que conseguir tocar, então a ordem aqui importa.
+        */}
+        <source
+          src={asset("/video/hero-mobile.mp4")}
+          type="video/mp4"
+          media="(max-width: 768px)"
+        />
         <source src={asset("/video/hero.mp4")} type="video/mp4" />
+        <source src={asset("/video/hero.webm")} type="video/webm" />
       </video>
 
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-cafe/55 via-cafe/10 to-transparent" />
