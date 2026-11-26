@@ -1,6 +1,7 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
+import Image from "next/image";
+import { useLayoutEffect, useRef, useState } from "react";
 import { Botao } from "@/components/ui/Botao";
 import { asset } from "@/lib/basePath";
 import { gsap, registrarGsap, ScrollTrigger, semMotion } from "@/lib/motion";
@@ -14,30 +15,30 @@ export function HeroVideo() {
   const progressoAtualRef = useRef(0);
   const ultimoTempoDesenhadoRef = useRef(-1);
 
+  // Sem motion (celular ou prefers-reduced-motion): nem monta o <video>.
+  // Celular de verdade tem travas que o Playwright não reproduz — modo de
+  // economia de dados do Android bloqueia carregamento de vídeo, e o
+  // Safari muitas vezes não pinta nenhum quadro de um <video> que nunca
+  // chegou a tocar. Uma imagem estática de verdade não tem esse problema.
+  const [usarVideo, setUsarVideo] = useState(false);
+
+  useLayoutEffect(() => {
+    // Lê matchMedia, só existe no navegador: precisa ser um efeito para
+    // não quebrar a hidratação do servidor (que sempre mostra a imagem).
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (!semMotion()) setUsarVideo(true);
+  }, []);
+
   // Rolagem: presa por ~300vh, controla o tempo do vídeo (0 a duration) e o zoom.
   // useLayoutEffect de propósito: precisa registrar o pin antes do refresh global
   // do ScrollTrigger (disparado pelo LenisProvider), senão as seções seguintes
   // calculam a posição sem contar com a altura do pin do Hero.
   useLayoutEffect(() => {
+    if (!usarVideo) return;
     const video = videoRef.current;
     if (!video) return;
 
-    const semAnimacao = semMotion();
     video.pause();
-
-    if (semAnimacao) {
-      const irParaUltimoQuadro = () => {
-        video.currentTime = Math.max(video.duration - 0.05, 0);
-      };
-      // Se os metadados já carregaram antes deste efeito rodar, o evento
-      // "loadedmetadata" não dispara de novo — por isso o check direto.
-      if (video.readyState >= 1 && !Number.isNaN(video.duration)) {
-        irParaUltimoQuadro();
-      }
-      video.addEventListener("loadedmetadata", irParaUltimoQuadro);
-      return () => video.removeEventListener("loadedmetadata", irParaUltimoQuadro);
-    }
-
     registrarGsap();
 
     const ctx = gsap.context(() => {
@@ -86,34 +87,35 @@ export function HeroVideo() {
       ctx.revert();
       cancelAnimationFrame(raf);
     };
-  }, []);
+  }, [usarVideo]);
 
   return (
     <section ref={secaoRef} id="topo" className="relative h-screen w-full overflow-hidden bg-creme">
-      <video
-        ref={videoRef}
-        className="absolute inset-0 h-full w-full object-cover"
-        muted
-        playsInline
-        preload="auto"
-        aria-hidden
-      >
-        {/*
-          MP4/H.264 primeiro de propósito: tem decodificação por hardware em
-          quase todo celular. O WebM/VP9 costuma só ter decodificação por
-          hardware em desktop — em celular (principalmente Android
-          intermediário) ele decodifica por software, e isso que travava a
-          rolagem ao arrastar o vídeo. O navegador usa o primeiro <source>
-          que conseguir tocar, então a ordem aqui importa.
-        */}
-        <source
-          src={asset("/video/hero-mobile.mp4")}
-          type="video/mp4"
-          media="(max-width: 768px)"
+      {usarVideo ? (
+        <video
+          ref={videoRef}
+          className="absolute inset-0 h-full w-full object-cover"
+          muted
+          playsInline
+          preload="auto"
+          aria-hidden
+        >
+          {/* Só monta em telas de desktop (ver usarVideo acima), então não
+              precisa de uma variante mobile — MP4 primeiro porque tem
+              decodificação por hardware mais confiável que VP9. */}
+          <source src={asset("/video/hero.mp4")} type="video/mp4" />
+          <source src={asset("/video/hero.webm")} type="video/webm" />
+        </video>
+      ) : (
+        <Image
+          src={asset("/img/hero-estatico.webp")}
+          alt="Bancada de cozinha com potes de vidro, frigideira, colher e pano de linho"
+          fill
+          sizes="100vw"
+          priority
+          className="object-cover"
         />
-        <source src={asset("/video/hero.mp4")} type="video/mp4" />
-        <source src={asset("/video/hero.webm")} type="video/webm" />
-      </video>
+      )}
 
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-cafe/55 via-cafe/10 to-transparent" />
 
