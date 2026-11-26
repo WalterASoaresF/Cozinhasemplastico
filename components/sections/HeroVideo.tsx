@@ -3,7 +3,7 @@
 import { useLayoutEffect, useRef } from "react";
 import { Botao } from "@/components/ui/Botao";
 import { asset } from "@/lib/basePath";
-import { gsap, prefereMovimentoReduzido, registrarGsap, ScrollTrigger } from "@/lib/motion";
+import { gsap, registrarGsap, ScrollTrigger, semMotion } from "@/lib/motion";
 
 const TITULO = "Uma cozinha que dura.";
 
@@ -22,15 +22,20 @@ export function HeroVideo() {
     const video = videoRef.current;
     if (!video) return;
 
-    const reduzido = prefereMovimentoReduzido();
+    const semAnimacao = semMotion();
     video.pause();
 
-    if (reduzido) {
-      const aoCarregarMetadados = () => {
+    if (semAnimacao) {
+      const irParaUltimoQuadro = () => {
         video.currentTime = Math.max(video.duration - 0.05, 0);
       };
-      video.addEventListener("loadedmetadata", aoCarregarMetadados);
-      return () => video.removeEventListener("loadedmetadata", aoCarregarMetadados);
+      // Se os metadados já carregaram antes deste efeito rodar, o evento
+      // "loadedmetadata" não dispara de novo — por isso o check direto.
+      if (video.readyState >= 1 && !Number.isNaN(video.duration)) {
+        irParaUltimoQuadro();
+      }
+      video.addEventListener("loadedmetadata", irParaUltimoQuadro);
+      return () => video.removeEventListener("loadedmetadata", irParaUltimoQuadro);
     }
 
     registrarGsap();

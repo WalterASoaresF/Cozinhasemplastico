@@ -6,7 +6,7 @@ import { Botao } from "@/components/ui/Botao";
 import { EtiquetaMaterial } from "@/components/ui/EtiquetaMaterial";
 import { asset } from "@/lib/basePath";
 import { marcarKitInteresse } from "@/lib/kitSelecionado";
-import { gsap, prefereMovimentoReduzido, registrarGsap } from "@/lib/motion";
+import { gsap, registrarGsap, semMotion } from "@/lib/motion";
 
 type Kit = {
   id: string;
@@ -52,7 +52,7 @@ export function Kits() {
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useLayoutEffect(() => {
-    if (prefereMovimentoReduzido()) return;
+    if (semMotion()) return;
     registrarGsap();
 
     const mm = gsap.matchMedia();

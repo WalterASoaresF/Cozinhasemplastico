@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useLayoutEffect, useRef } from "react";
 import { asset } from "@/lib/basePath";
-import { gsap, prefereMovimentoReduzido, registrarGsap } from "@/lib/motion";
+import { gsap, registrarGsap, semMotion } from "@/lib/motion";
 
 // TEXTO/IMAGEM PROVISÓRIO: ângulo de microplásticos pedido pelo cliente em 2026-11-25,
 // em conflito com a regra "sem promessas de saúde" do CLAUDE.md (seção "Regras de
@@ -35,7 +35,7 @@ export function OProblema() {
   const linhaRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useLayoutEffect(() => {
-    if (prefereMovimentoReduzido()) return;
+    if (semMotion()) return;
     registrarGsap();
 
     const ctx = gsap.context(() => {

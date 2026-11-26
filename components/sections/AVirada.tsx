@@ -1,7 +1,7 @@
 "use client";
 
 import { useLayoutEffect, useRef } from "react";
-import { gsap, prefereMovimentoReduzido, registrarGsap } from "@/lib/motion";
+import { gsap, registrarGsap, semMotion } from "@/lib/motion";
 import { cores } from "@/lib/tokens";
 
 // TEXTO PROVISÓRIO: troca pedida pelo cliente em 2026-11-25, em conflito com a regra
@@ -15,7 +15,7 @@ export function AVirada() {
   const tituloRef = useRef<HTMLHeadingElement>(null);
 
   useLayoutEffect(() => {
-    if (prefereMovimentoReduzido()) return;
+    if (semMotion()) return;
     registrarGsap();
 
     const ctx = gsap.context(() => {

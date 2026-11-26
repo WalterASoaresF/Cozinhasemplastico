@@ -17,8 +17,20 @@ export function prefereMovimentoReduzido() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
+// Celular: sem motion design (pedido do cliente, 2026-11-26) — nada de
+// ScrollTrigger/pin/scrub nem rolagem suave do Lenis, só rolagem nativa e
+// os estados finais estáticos. Mesmo breakpoint usado em Kits.tsx (lg).
+export function ehMobile() {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia("(max-width: 1023px)").matches;
+}
+
+export function semMotion() {
+  return prefereMovimentoReduzido() || ehMobile();
+}
+
 export function iniciarLenis() {
-  if (typeof window === "undefined" || prefereMovimentoReduzido()) return undefined;
+  if (typeof window === "undefined" || semMotion()) return undefined;
 
   const lenis = new Lenis({
     autoRaf: false,

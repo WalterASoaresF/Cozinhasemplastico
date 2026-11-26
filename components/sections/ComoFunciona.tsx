@@ -1,7 +1,7 @@
 "use client";
 
 import { useLayoutEffect, useRef } from "react";
-import { gsap, prefereMovimentoReduzido, registrarGsap } from "@/lib/motion";
+import { gsap, registrarGsap, semMotion } from "@/lib/motion";
 
 const PASSOS = [
   {
@@ -23,7 +23,7 @@ export function ComoFunciona() {
   const passoRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useLayoutEffect(() => {
-    if (prefereMovimentoReduzido()) return;
+    if (semMotion()) return;
     registrarGsap();
 
     const ctx = gsap.context(() => {

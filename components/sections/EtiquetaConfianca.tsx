@@ -1,7 +1,7 @@
 "use client";
 
 import { useLayoutEffect, useRef } from "react";
-import { gsap, prefereMovimentoReduzido, registrarGsap } from "@/lib/motion";
+import { gsap, registrarGsap, semMotion } from "@/lib/motion";
 
 const LINHA_1 = "POTE 500 ML";
 const LINHA_2 = "VIDRO · TAMPA DE BAMBU · VEDAÇÃO DE SILICONE";
@@ -27,7 +27,7 @@ export function EtiquetaConfianca() {
   const etiquetaRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
-    if (prefereMovimentoReduzido()) return;
+    if (semMotion()) return;
     registrarGsap();
 
     const ctx = gsap.context(() => {
