@@ -11,8 +11,6 @@ const TITULO = "Uma cozinha que dura.";
 export function HeroVideo() {
   const secaoRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const progressoAlvoRef = useRef(0);
-  const progressoAtualRef = useRef(0);
   const ultimoTempoDesenhadoRef = useRef(-1);
 
   // Sem motion (celular ou prefers-reduced-motion): nem monta o <video>.
@@ -41,6 +39,28 @@ export function HeroVideo() {
     video.pause();
     registrarGsap();
 
+    // Desenha o quadro do vídeo direto no onUpdate do ScrollTrigger, sem
+    // loop de rAF próprio nem suavização (lerp) manual por cima do scrub.
+    // O Lenis (lib/motion.ts) já suaviza a rolagem em si, e o GSAP garante
+    // no máximo uma atualização de onUpdate por quadro; um segundo
+    // suavizador aqui só atrasava o vídeo em relação ao zoom (que usa o
+    // mesmo scrub, mas sem lerp) e ficava "correndo atrás" por vários
+    // quadros depois que a rolagem já tinha parado. Decisão nossa: setar
+    // o currentTime direto no onUpdate evita o lerp redundante e mantém
+    // o zoom e o vídeo lendo a mesma posição de scroll.
+    function desenharQuadro(progresso: number) {
+      const duracao = video!.duration;
+      if (!duracao || Number.isNaN(duracao)) return;
+      const alvo = progresso * duracao;
+      // Deixa de buscar quando o alvo já está dentro de ~1 quadro do vídeo
+      // (fonte é ~24fps) do que já foi desenhado — evita seeks redundantes
+      // que só custam decodificação sem mudar o quadro exibido.
+      if (Math.abs(alvo - ultimoTempoDesenhadoRef.current) > 1 / 24) {
+        video!.currentTime = alvo;
+        ultimoTempoDesenhadoRef.current = alvo;
+      }
+    }
+
     const ctx = gsap.context(() => {
       ScrollTrigger.create({
         trigger: secaoRef.current,
@@ -49,7 +69,7 @@ export function HeroVideo() {
         scrub: true,
         pin: true,
         onUpdate: (self) => {
-          progressoAlvoRef.current = self.progress;
+          desenharQuadro(self.progress);
         },
       });
 
@@ -66,26 +86,8 @@ export function HeroVideo() {
       });
     }, secaoRef);
 
-    let raf: number;
-    function loop() {
-      progressoAtualRef.current +=
-        (progressoAlvoRef.current - progressoAtualRef.current) * 0.1;
-
-      const duracao = video!.duration;
-      if (duracao && !Number.isNaN(duracao)) {
-        const alvo = progressoAtualRef.current * duracao;
-        if (Math.abs(alvo - ultimoTempoDesenhadoRef.current) > 1 / 30) {
-          video!.currentTime = alvo;
-          ultimoTempoDesenhadoRef.current = alvo;
-        }
-      }
-      raf = requestAnimationFrame(loop);
-    }
-    raf = requestAnimationFrame(loop);
-
     return () => {
       ctx.revert();
-      cancelAnimationFrame(raf);
     };
   }, [usarVideo]);
 
